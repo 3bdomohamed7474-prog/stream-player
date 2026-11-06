@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشغل البث المباشر الخاص بي</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        body { background-color: #111; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .container { width: 90%; max-width: 800px; text-align: center; }
+        .input-area { margin-bottom: 20px; background: #222; padding: 20px; border-radius: 10px; }
+        input { width: 70%; padding: 10px; border-radius: 5px; border: none; margin-bottom: 10px; }
+        button { padding: 10px 20px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #b20710; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📺 مشغل البث المباشر</h2>
+    <div class="input-area">
+        <input type="text" id="urlInput" placeholder="ضع رابط m3u8 هنا...">
+        <button onclick="loadStream()">تشغيل الآن</button>
+    </div>
+    <video id="player" controls crossorigin playsinline style="width:100%; border-radius: 10px;"></video>
+</div>
+
+<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<script>
+    const video = document.getElementById('player');
+    const player = new Plyr(video);
+
+    function loadStream() {
+        const source = document.getElementById('urlInput').value;
+        if (!source) { alert("من فضلك ضع الرابط أولاً"); return; }
+
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(source);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = source;
+        }
+    }
+</script>
+</body>
+</html>
